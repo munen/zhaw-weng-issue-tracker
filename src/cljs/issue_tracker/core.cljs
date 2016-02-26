@@ -24,16 +24,29 @@
         {:on-click #(swap! collapsed? not)} "☰"]
        [:div.collapse.navbar-toggleable-xs
         (when-not @collapsed? {:class "in"})
-        [:a.navbar-brand {:href "#/"} "issue_tracker"]
+         [:a.navbar-brand {:href "#/"} [:div
+                                        [:img{:width "30px" :src "img/orgmode-logo.png"}]
+                                        "   re-issue"]]
         [:ul.nav.navbar-nav
          [nav-link "#/" "Home" :home collapsed?]
-         [nav-link "#/about" "About" :about collapsed?]]]])))
+         [nav-link "#/about" "About" :about collapsed?]
+         [nav-link "#/contact" "Contact" :contact collapsed?]]]])))
 
 (defn about-page []
   [:div.container
    [:div.row
     [:div.col-md-12
-     "this is the story of issue_tracker... work in progress"]]])
+     [:p
+      "This is the reference implementation of the Weng Issue Tracker"]]]])
+
+(defn contact-page []
+  [:div.container
+   [:div.row
+    [:div.col-md-12
+     [:p "Alain M. Lafon"]
+     [:p
+      [:a{:href "mailto:lafo@zhaw.ch"} "lafo@zhaw.ch"]]
+     [:p "+41 76 40 50 567"]]]])
 
 (defn home-page []
   [:div.container
@@ -52,6 +65,7 @@
 
 (def pages
   {:home #'home-page
+   :contact #'contact-page
    :about #'about-page})
 
 (defn page []
@@ -66,6 +80,9 @@
 
 (secretary/defroute "/about" []
   (session/put! :page :about))
+
+(secretary/defroute "/contact" []
+  (session/put! :page :contact))
 
 ;; -------------------------
 ;; History
