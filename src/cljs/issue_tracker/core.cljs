@@ -57,10 +57,11 @@
 ; END DATA Definitions
 
 (defn priority-input []
-  [:select.form-control {:field :list}
-   [:option  "Priority"]
+  [:select.form-control {:field :list
+                         :on-change #(swap! new-issue assoc :priority (-> % .-target .-value))}
    [:option {:key :1} "1"]
-   [:option {:key :2} "2"]])
+   [:option {:key :2} "2"]
+   [:option {:key :3} "3"]])
 
 (defn date-input [] 
   [:input{:type "date"
@@ -74,6 +75,7 @@
 (defn add-issue-to-list []
   (swap! issues-atom conj {:key @issues-counter
                            :name (:name @new-issue)
+                           :priority (:priority @new-issue)
                            :date (:date @new-issue)})
   (swap! issues-counter inc))
 
@@ -97,7 +99,9 @@
                    :checked (if (:completed issue) "checked" "")}]]
          [:div.col-md-3
           (:date issue)]
-         [:div.col-md-8
+         [:div.col-md-1
+          (:priority issue)]
+         [:div.col-md-7
           (:name issue)]]])]))
 
 (defn home-page []
