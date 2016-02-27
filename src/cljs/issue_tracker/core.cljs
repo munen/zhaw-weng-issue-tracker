@@ -56,6 +56,22 @@
 (defonce issues-atom (r/atom []))
 ; END DATA Definitions
 
+; BEGIN DATA Manipulation Functions
+(defn add-issue-to-list []
+  (swap! issues-atom conj {:key @issues-counter
+                           :name (:name @new-issue)
+                           :priority (:priority @new-issue)
+                           :date (:date @new-issue)})
+  (swap! issues-counter inc))
+
+(defn toggle-issue [key]
+  (swap! issues-atom update-in [key :completed] not))
+
+(defn delete-issue [key]
+  (reset! issues-atom (filter #(not (= key (:key %))) @issues-atom)))
+; END DATA Manipulation Functions
+
+
 (defn priority-input []
   [:select.form-control {:field :list
                          :on-change #(swap! new-issue assoc :priority (-> % .-target .-value))}
@@ -71,16 +87,6 @@
   [:input {:field :text :id :issue-name
            :placeholder "Enter your issue"
            :on-change #(swap! new-issue assoc :name (-> % .-target .-value))}])
-
-(defn add-issue-to-list []
-  (swap! issues-atom conj {:key @issues-counter
-                           :name (:name @new-issue)
-                           :priority (:priority @new-issue)
-                           :date (:date @new-issue)})
-  (swap! issues-counter inc))
-
-(defn toggle-issue [key]
-  (swap! issues-atom update-in [key :completed] not))
 
 (defn create-issue-button []
   [:button.btn.btn-default
@@ -101,8 +107,11 @@
           (:date issue)]
          [:div.col-md-1
           (:priority issue)]
-         [:div.col-md-7
-          (:name issue)]]])]))
+         [:div.col-md-6
+          (:name issue)]
+         [:div.col-md-1
+          [:button.destroy {:on-click #(delete-issue (:key issue))}
+           "x"]]]])]))
 
 (defn home-page []
   [:div.container
