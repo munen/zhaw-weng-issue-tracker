@@ -107,11 +107,12 @@
           [:input {:type :checkbox
                    :on-click #(toggle-issue (:key issue))
                    :checked (if (:completed issue) "checked" "")}]]
-         [:div.col-md-3
+         [:div.col-md-3{:style {:text-decoration (if (:completed issue) :line-through :none)}}
+
           (:date issue)]
          [:div.col-md-1
           (:priority issue)]
-         [:div.col-md-6
+         [:div.col-md-6{:style {:text-decoration (if (:completed issue) :line-through :none)}}
           (:name issue)]
          [:div.col-md-1
           [:button.destroy {:on-click #(delete-issue (:key issue))}
