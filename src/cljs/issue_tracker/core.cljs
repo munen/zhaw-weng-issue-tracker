@@ -48,6 +48,14 @@
       [:a{:href "mailto:lafo@zhaw.ch"} "lafo@zhaw.ch"]]
      [:p "+41 76 40 50 567"]]]])
 
+; BEGIN DATA Definitions
+(defonce issues-counter (r/atom 0))
+
+(def new-issue (r/atom {}))
+
+(defonce issues-atom (r/atom []))
+; END DATA Definitions
+
 (defn priority-input []
   [:select.form-control {:field :list}
    [:option  "Priority"]
@@ -55,14 +63,8 @@
    [:option {:key :2} "2"]])
 
 (defn date-input [] 
-  [:input{:type "date"}])
-
-; DATA Definitions
-(defonce issues-counter (r/atom 0))
-
-(def new-issue (r/atom {}))
-
-(defonce issues-atom (r/atom []))
+  [:input{:type "date"
+           :on-change #(swap! new-issue assoc :date (-> % .-target .-value))}])
 
 (defn issue-input []
   [:input {:field :text :id :issue-name
@@ -71,7 +73,8 @@
 
 (defn add-issue-to-list []
   (swap! issues-atom conj {:key @issues-counter
-                           :name (:name @new-issue) })
+                           :name (:name @new-issue)
+                           :date (:date @new-issue)})
   (swap! issues-counter inc))
 
 (defn toggle-issue [key]
