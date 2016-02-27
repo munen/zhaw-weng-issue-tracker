@@ -24,9 +24,9 @@
         {:on-click #(swap! collapsed? not)} "☰"]
        [:div.collapse.navbar-toggleable-xs
         (when-not @collapsed? {:class "in"})
-         [:a.navbar-brand {:href "#/"} [:div
-                                        [:img{:width "30px" :src "img/orgmode-logo.png"}]
-                                        "   re-issue"]]
+        [:a.navbar-brand {:href "#/"} [:div
+                                       [:img{:width "30px" :src "img/orgmode-logo.png"}]
+                                       "   re-issue"]]
         [:ul.nav.navbar-nav
          [nav-link "#/" "Home" :home collapsed?]
          [nav-link "#/about" "About" :about collapsed?]
@@ -48,20 +48,61 @@
       [:a{:href "mailto:lafo@zhaw.ch"} "lafo@zhaw.ch"]]
      [:p "+41 76 40 50 567"]]]])
 
+(defn priority-input []
+  [:select.form-control {:field :list}
+   [:option  "Priority"]
+   [:option {:key :1} "1"]
+   [:option {:key :2} "2"]])
+
+(defn date-input [] 
+  [:input{:type "date"}])
+
+(def tmp-issue-name (r/atom nil))
+
+(defn issue-input []
+  [:input {:field :text :id :issue-name
+           :placeholder "Enter your issue"
+           :on-change #(reset! tmp-issue-name (-> % .-target .-value))}])
+
+(def issues-atom (r/atom [{:name "initial issue"
+                           :completed true
+                           :date "28.02.2016"}]))
+
+(defn create-issue-button []
+  [:button.btn.btn-default
+   {:on-click #(swap! issues-atom conj {:name @tmp-issue-name })}
+   "Create Task"])
+
+(defn issues-list []
+  (fn []
+    [:ul{:style {:list-style :none}}
+     (for [issue @issues-atom]
+       [:li
+        [:div.row
+         [:div.col-md-1
+          [:input {:type :checkbox
+                   ; TODO: This most likely does not yet update the
+                   ; state in the issues-atom
+                   :on-click #(swap! issue not (:completed issue))
+                   :checked (if (:completed issue) "checked" "")}]]
+         [:div.col-md-3
+          (:date issue)]
+         [:div.col-md-8
+          (:name issue)]]])]))
+
 (defn home-page []
   [:div.container
    [:div.jumbotron
-    [:h1 "Welcome to issue_tracker"]
-    [:p "Time to start building your site!"]
-    [:p [:a.btn.btn-primary.btn-lg {:href "http://luminusweb.net"} "Learn more »"]]]
-   [:div.row
-    [:div.col-md-12
-     [:h2 "Welcome to ClojureScript"]]]
-   (when-let [docs (session/get :docs)]
-     [:div.row
-      [:div.col-md-12
-       [:div {:dangerouslySetInnerHTML
-              {:__html (md->html docs)}}]]])])
+    [:div.row
+     [:div.col-md-3
+      [priority-input]]
+     [:div.col-md-3
+      [date-input]]
+     [:div.col-md-4
+      [issue-input]]
+     [:div.col-md-2
+      [create-issue-button]]]
+    [issues-list]]])
 
 (def pages
   {:home #'home-page
