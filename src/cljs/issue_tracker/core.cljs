@@ -57,20 +57,29 @@
 (defn date-input [] 
   [:input{:type "date"}])
 
-(def tmp-issue-name (r/atom nil))
+; DATA Definitions
+(defonce issues-counter (r/atom 0))
+
+(def new-issue (r/atom {}))
+
+(defonce issues-atom (r/atom []))
 
 (defn issue-input []
   [:input {:field :text :id :issue-name
            :placeholder "Enter your issue"
-           :on-change #(reset! tmp-issue-name (-> % .-target .-value))}])
+           :on-change #(swap! new-issue assoc :name (-> % .-target .-value))}])
 
-(def issues-atom (r/atom [{:name "initial issue"
-                           :completed true
-                           :date "28.02.2016"}]))
+(defn add-issue-to-list []
+  (swap! issues-atom conj {:key @issues-counter
+                           :name (:name @new-issue) })
+  (swap! issues-counter inc))
+
+(defn toggle-issue [key]
+  (swap! issues-atom update-in [key :completed] not))
 
 (defn create-issue-button []
   [:button.btn.btn-default
-   {:on-click #(swap! issues-atom conj {:name @tmp-issue-name })}
+   {:on-click #(add-issue-to-list)}
    "Create Task"])
 
 (defn issues-list []
@@ -81,9 +90,7 @@
         [:div.row
          [:div.col-md-1
           [:input {:type :checkbox
-                   ; TODO: This most likely does not yet update the
-                   ; state in the issues-atom
-                   :on-click #(swap! issue not (:completed issue))
+                   :on-click #(toggle-issue (:key issue))
                    :checked (if (:completed issue) "checked" "")}]]
          [:div.col-md-3
           (:date issue)]
@@ -102,7 +109,8 @@
       [issue-input]]
      [:div.col-md-2
       [create-issue-button]]]
-    [issues-list]]])
+    [issues-list]]
+    [issues-list]])
 
 (def pages
   {:home #'home-page
