@@ -51,7 +51,10 @@
 ; BEGIN DATA Definitions
 (defonce issues-counter (r/atom 0))
 
-(def new-issue (r/atom {}))
+(def new-issue (r/atom {:priority 1
+                        ; Today
+                        :date (-> (js/Date.) .toISOString (.slice 0 10))
+                        }))
 
 (defonce issues-atom (r/atom []))
 ; END DATA Definitions
@@ -81,7 +84,8 @@
 
 (defn date-input [] 
   [:input{:type "date"
-           :on-change #(swap! new-issue assoc :date (-> % .-target .-value))}])
+          :value (:date @new-issue)
+          :on-change #(swap! new-issue assoc :date (-> % .-target .-value))}])
 
 (defn issue-input []
   [:input {:field :text :id :issue-name
