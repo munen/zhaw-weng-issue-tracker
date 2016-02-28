@@ -19,7 +19,3 @@ WHERE id = :id
 -- :doc delete a user given the id
 DELETE FROM users
 WHERE id = :id
-
--- :name get-users :? :n
--- :doc retrieve a user given the id.
-SELECT * FROM users
