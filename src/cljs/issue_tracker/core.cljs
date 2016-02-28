@@ -130,7 +130,12 @@
      [:div.col-md-2
       [create-issue-button]]]
     [issues-list]]
-    [issues-list]])
+   [issues-list]
+   [:div.row
+    [:div.col-md-6
+     [:button.btn "Load from Server"]]
+    [:div.col-md-6
+     [:button.btn "Save to Server"]]]])
 
 (def pages
   {:home #'home-page

@@ -2,6 +2,7 @@
   (:require [issue-tracker.layout :as layout]
             [compojure.core :refer [defroutes GET]]
             [ring.util.http-response :as response]
+            [issue-tracker.db.core :as db]
             [clojure.java.io :as io]))
 
 (defn home-page []
@@ -9,7 +10,10 @@
 
 (defroutes home-routes
   (GET "/" [] (home-page))
-  (GET "/issues" [] {:body [{:name "Issue 1"
+  (GET "/issues" []
+       ;; (db/create-issue! {:id 1 :title "fooo"})
+       ;; (println (db/get-issues))
+       {:body [{:name "Issue 1"
                             :priority 1
                             :date "2016-12-30"
                              :id 123}
