@@ -4,7 +4,7 @@
   :url "http://example.com/FIXME"
 
   :dependencies [[org.clojure/clojure "1.8.0"]
-                 ;; [selmer "1.0.0"]
+                 [selmer "1.0.0"]
                  [markdown-clj "0.9.86"]
                  [luminus/config "0.8"]
                  [ring-middleware-format "0.7.0"]
@@ -58,7 +58,7 @@
       :output-dir "target/cljsbuild/public/js/out"
       :externs ["react/externs/react.js"]
       :pretty-print true}}}}
-  
+
   :profiles
   {:uberjar {:omit-source true
              :env {:production true}
@@ -71,8 +71,8 @@
                  {:optimizations :advanced
                   :pretty-print false
                   :closure-warnings
-                  {:externs-validation :off :non-standard-jsdoc :off}}}}} 
-             
+                  {:externs-validation :off :non-standard-jsdoc :off}}}}}
+
              :aot :all
              :uberjar-name "issue_tracker.jar"
              :source-paths ["env/prod/clj"]
@@ -103,8 +103,8 @@
                       {:output-to "target/test.js"
                        :main "issue-tracker.doo-runner"
                        :optimizations :whitespace
-                       :pretty-print true}}}} 
-                  
+                       :pretty-print true}}}}
+
                   :figwheel
                   {:http-server-root "public"
                    :server-port 3449

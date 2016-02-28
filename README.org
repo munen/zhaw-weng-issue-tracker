@@ -1,0 +1,37 @@
+* ZHAW Web Engineering Issue Tracker
+
+** Prerequisites
+
+*** Software
+
+You will need Leiningen 2.0[fn:1] or above installed.
+
+
+*** Database
+
+Create a Postgres Database
+
+** Running
+
+To start a web server for the application, run:
+
+#+BEGIN_SRC shell
+    lein run
+#+END_SRC
+
+To do live front-end coding, run:
+
+#+BEGIN_SRC shell
+    lein figwheel
+
+#+END_SRC
+
+** License
+
+Eclipse Public License - EPL
+
+Copyright © 2016 Munen Alain M. Lafon
+
+* Footnotes
+
+[fn:1] https://github.com/technomancy/leiningen
