@@ -53,8 +53,7 @@
 
 (def new-issue (r/atom {:priority 1
                         ; Today
-                        :date (-> (js/Date.) .toISOString (.slice 0 10))
-                        }))
+                        :date (-> (js/Date.) .toISOString (.slice 0 10))}))
 
 (defonce issues-atom (r/atom []))
 ; END DATA Definitions
