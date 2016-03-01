@@ -1,8 +1,7 @@
 (defproject issue_tracker "0.1.0-SNAPSHOT"
 
-  :description "FIXME: write description"
-  :url "http://example.com/FIXME"
-
+  :description "Reference implementation of the Semesters project for ZHAW/WENG"
+  :url "https://gitlab.com/munen/zhaw-weng-issue-tracker/"
   :dependencies [[org.clojure/clojure "1.8.0"]
                  [selmer "1.0.0"]
                  [markdown-clj "0.9.86"]
@@ -45,7 +44,7 @@
   :main issue-tracker.core
   :migratus {:store :database
              :db (or (System/getenv "DATABASE_URL")
-                     (env :database-url)}
+                     (env :database-url))}
 
   :plugins [[lein-environ "1.0.1"]
             [migratus-lein "0.2.6"]
