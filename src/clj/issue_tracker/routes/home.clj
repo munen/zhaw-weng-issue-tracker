@@ -8,11 +8,13 @@
 (defn home-page []
   (layout/render "home.html"))
 
+
+
 (defroutes home-routes
   (GET "/" [] (home-page))
   (GET "/issues" []
        ;; (db/create-issue! {:id 1 :title "fooo"})
-       ;; (println (db/get-issues))
+       ;; (db/get-user {:id "1"})
        {:body [{:name "Issue 1"
                             :priority 1
                             :date "2016-12-30"
