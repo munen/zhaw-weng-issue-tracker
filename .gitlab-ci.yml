@@ -4,7 +4,7 @@ variables:
 
 before_script:
   - apt-get update -y
-  - apt-get install default-jre postgresql-client -y
+  - apt-get install openjdk-8-jre postgresql-client -y
   - wget https://raw.githubusercontent.com/technomancy/leiningen/stable/bin/lein
   - chmod a+x lein
   - export LEIN_ROOT=1
