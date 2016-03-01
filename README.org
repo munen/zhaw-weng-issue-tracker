@@ -1,4 +1,6 @@
 * ZHAW Web Engineering Issue Tracker
+  
+[[https://gitlab.com/munen/zhaw-weng-issue-tracker/badges/master/build.svg][Gitlab CI Build Status]]
 
 ** Prerequisites
 

@@ -43,7 +43,9 @@
   :resource-paths ["resources" "target/cljsbuild"]
 
   :main issue-tracker.core
-  :migratus {:store :database}
+  :migratus {:store :database
+             :db (or (System/getenv "DATABASE_URL")
+                     (env :database-url)}
 
   :plugins [[lein-environ "1.0.1"]
             [migratus-lein "0.2.6"]
