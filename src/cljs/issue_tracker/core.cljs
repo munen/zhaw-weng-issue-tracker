@@ -49,28 +49,30 @@
      [:p "+41 76 40 50 567"]]]])
 
 ; BEGIN DATA Definitions
-(defonce issues-counter (r/atom 0))
+(def issues-counter (r/atom 0))
 
-(def new-issue (r/atom {:priority 1
-                        ; Today
-                        :date (-> (js/Date.) .toISOString (.slice 0 10))}))
+(defonce new-issue (r/atom {:priority 1
+                            :completed false
+                            ; Today
+                            :date (-> (js/Date.) .toISOString (.slice 0 10))}))
 
-(defonce issues-atom (r/atom []))
+(def issues-atom (r/atom {}))
 ; END DATA Definitions
 
 ; BEGIN DATA Manipulation Functions
-(defn add-issue-to-list []
-  (swap! issues-atom conj {:key @issues-counter
-                           :name (:name @new-issue)
-                           :priority (:priority @new-issue)
-                           :date (:date @new-issue)})
+(defn add-issue-to-list [d]
+  "d is the atom that is to be updated"
+  (swap! d merge {@issues-counter @new-issue})
   (swap! issues-counter inc))
 
-(defn toggle-issue [key]
+(defn toggle-issue [d key]
+  "d is the atom that is to be updated
+   key is the id of the issue"
   (swap! issues-atom update-in [key :completed] not))
 
-(defn delete-issue [key]
-  (reset! issues-atom (filter #(not (= key (:key %))) @issues-atom)))
+(defn delete-issue [d key]
+  "d is the atom that is to be updated"
+  (reset! d (filter #(not (= key (:key %))) @issues-atom)))
 ; END DATA Manipulation Functions
 
 
@@ -93,29 +95,30 @@
 
 (defn create-issue-button []
   [:button.btn.btn-default
-   {:on-click #(add-issue-to-list)}
+   {:on-click #(add-issue-to-list issues-atom)}
    "Create Task"])
 
 (defn issues-list []
   (fn []
     [:ul{:style {:list-style :none}}
-     (for [issue @issues-atom]
-       [:li
-        [:div.row
-         [:div.col-md-1
-          [:input {:type :checkbox
-                   :on-click #(toggle-issue (:key issue))
-                   :checked (if (:completed issue) "checked" "")}]]
-         [:div.col-md-3{:style {:text-decoration (if (:completed issue) :line-through :none)}}
+     (for [key (keys @issues-atom)]
+       (let [issue (get-in @issues-atom [key])]
+             [:li
+              [:div.row
+               [:div.col-md-1
+                [:input {:type :checkbox
+                         :on-click #(toggle-issue issues-atom (:key issue))
+                         :checked (if (:completed issue) "checked" "")}]]
+               [:div.col-md-3{:style {:text-decoration (if (:completed issue) :line-through :none)}}
 
-          (:date issue)]
-         [:div.col-md-1
-          (:priority issue)]
-         [:div.col-md-6{:style {:text-decoration (if (:completed issue) :line-through :none)}}
-          (:name issue)]
-         [:div.col-md-1
-          [:button.destroy {:on-click #(delete-issue (:key issue))}
-           "x"]]]])]))
+                (:date issue)]
+               [:div.col-md-1
+                (:priority issue)]
+               [:div.col-md-6{:style {:text-decoration (if (:completed issue) :line-through :none)}}
+                (:name issue)]
+               [:div.col-md-1
+                [:button.destroy {:on-click #(delete-issue (:key issue))}
+                 "x"]]]]))]))
 
 (defn home-page []
   [:div.container
@@ -138,9 +141,9 @@
      [:button.btn "Save to Server"]]]])
 
 (def pages
-  {:home #'home-page
-   :contact #'contact-page
-   :about #'about-page})
+  {:home home-page
+   :contact contact-page
+   :about about-page})
 
 (defn page []
   [(pages (session/get :page))])

@@ -1,36 +1,71 @@
 (ns issue-tracker.core-test
   (:require [cljs.test :refer-macros [is are deftest testing use-fixtures]]
-            [reagent.core :as r :refer [atom]]))
-
+            [reagent.core :as r :refer [atom]]
+            [issue-tracker.core :as itc :refer [issues-atom
+                                                new-issue
+                                                add-issue-to-list
+                                                issues-counter]]))
 (defn setup []
-  (def issues-counter (r/atom 0))
+  (reset! issues-atom {})
+  (reset! issues-counter 0))
 
-  (def new-issue (r/atom {:priority 1
-                          :date (-> (js/Date.) .toISOString (.slice 0 10))}))
+(deftest delete-issue-test
+  (testing "Should delete a specific issue"
+    (setup)
+    
+    ))
 
-  (def issues-atom (r/atom []))
-
-
-  (defn add-issue-to-list []
-    (swap! issues-atom conj {:key @issues-counter
-                             :name (:name @new-issue)
-                             :priority (:priority @new-issue)
-                             :date (:date @new-issue)})
-    (swap! issues-counter inc))
-
-  (swap! new-issue assoc :priority 1)
-  (swap! new-issue assoc :date "2016-12-12")
-  (swap! new-issue assoc :name "foo")
-  (swap! new-issue assoc :completed false)
-  )
-
-
-(deftest toggle-issue
+(deftest toggle-issue-test
   (testing "Should toggle a specific issue"
     (setup)
-    (is (= (:completed (first (issue-tracker.core/toggle-issue 0)))
-           true))
-    (is (= (:completed (first (issue-tracker.core/toggle-issue 0)))
+    (dotimes [n 3]
+      (add-issue-to-list issues-atom))
+    (println @issues-atom)
+    (is (= (:completed (get-in @issues-atom [1]))
            false))
-    (is (= (:completed (first (issue-tracker.core/toggle-issue 0)))
-           true))))
+    (do
+      (itc/toggle-issue issues-atom 1)
+      (is (= (:completed (get-in @issues-atom [1]))
+             true)))
+    (do
+      (itc/toggle-issue issues-atom 1)
+      (is (= (:completed (get-in @issues-atom [1]))
+             false)))
+    (do
+      (itc/toggle-issue issues-atom 1)
+      (is (= (:completed (get-in @issues-atom [1]))
+             true)))))
+
+(deftest add-issue-to-list-test
+  (testing "Should increment the issue-counter key"
+    (setup)
+    (is (= @issues-atom
+           {}))
+    (do
+      (add-issue-to-list issues-atom)
+      (is (= (count (keys @issues-atom))
+             1)))
+    (do
+      (add-issue-to-list issues-atom)
+      (is (= (count (keys @issues-atom))
+             2)))))
+
+;; (comment
+
+;;   (keys (deref issue-tracker.core/issues-atom) )
+
+
+;;   (for [key (keys (deref issue-tracker.core/issues-atom))]
+;;        (println key) )
+
+;;   (get-in (deref issue-tracker.core/issues-atom) [1])
+
+;;   (swap! issue-tracker.core/issues-atom update-in [18 :completed] not)
+
+
+;;   (def ppl (atom {"persons" {"joe" {:age 1}}}))
+
+;;   (get-in @ppl ["persons" "joe"])
+
+;;   (swap! ppl assoc-in ["persons" "joe"] {:age 11})
+;;   )
