@@ -4,7 +4,14 @@ variables:
 
 before_script:
   - apt-get update -y
-  - apt-get install default-jre postgresql-client rhino -y 
+  - apt-get -y install libicu52 libjpeg-dev libfreetype6 libfontconfig unzip
+  - mkdir -p /root/bin
+  - curl -sL -o /root/bin/phantomjs-2.0.zip https://github.com/jakemauer/phantomjs/releases/download/2.0.0-debian-bin/phantomjs-2.0.0-debian-x86_64.zip
+  - unzip /root/bin/phantomjs-2.0.zip -d /root/bin
+  - rm -f /root/bin/phantomjs-2.0.zip
+  - ln -s /root/bin/phantomjs /usr/bin/phantomjs
+  - apt-get update -y
+  - apt-get install default-jre postgresql-client -y 
   - wget https://raw.githubusercontent.com/technomancy/leiningen/stable/bin/lein
   - chmod a+x lein
   - export LEIN_ROOT=1
@@ -15,4 +22,4 @@ before_script:
 test: 
   script: 
     - lein test
-    - lein doo rhino
+    - lein doo phantom
