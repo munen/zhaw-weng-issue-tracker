@@ -59,23 +59,3 @@
       (add-issue-to-list issues-atom)
       (is (= (count (keys @issues-atom))
              2)))))
-
-;; (comment
-
-;;   (keys (deref issue-tracker.core/issues-atom) )
-
-
-;;   (for [key (keys (deref issue-tracker.core/issues-atom))]
-;;        (println key) )
-
-;;   (get-in (deref issue-tracker.core/issues-atom) [1])
-
-;;   (swap! issue-tracker.core/issues-atom update-in [18 :completed] not)
-
-
-;;   (def ppl (atom {"persons" {"joe" {:age 1}}}))
-
-;;   (get-in @ppl ["persons" "joe"])
-
-;;   (swap! ppl assoc-in ["persons" "joe"] {:age 11})
-;;   )
