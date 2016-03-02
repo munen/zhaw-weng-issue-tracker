@@ -15,4 +15,4 @@ before_script:
 test: 
   script: 
     - lein test
-    - lein doo phantom
+    - lein doo rhino
