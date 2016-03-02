@@ -49,14 +49,14 @@
      [:p "+41 76 40 50 567"]]]])
 
 ; BEGIN DATA Definitions
-(def issues-counter (r/atom 0))
+(defonce issues-counter (r/atom 0))
 
 (defonce new-issue (r/atom {:priority 1
                             :completed false
                             ; Today
                             :date (-> (js/Date.) .toISOString (.slice 0 10))}))
 
-(def issues-atom (r/atom {}))
+(defonce issues-atom (r/atom {}))
 ; END DATA Definitions
 
 ; BEGIN DATA Manipulation Functions
@@ -77,8 +77,7 @@
 
 
 (defn priority-input []
-  [:select.form-control {:field :list
-                         :on-change #(swap! new-issue assoc :priority (-> % .-target .-value))}
+  [:select.form-control {:on-change #(swap! new-issue assoc :priority (-> % .-target .-value))}
    [:option {:key :1} "1"]
    [:option {:key :2} "2"]
    [:option {:key :3} "3"]])
@@ -89,7 +88,7 @@
           :on-change #(swap! new-issue assoc :date (-> % .-target .-value))}])
 
 (defn issue-input []
-  [:input {:field :text :id :issue-name
+  [:input {:type :text
            :placeholder "Enter your issue"
            :on-change #(swap! new-issue assoc :name (-> % .-target .-value))}])
 
@@ -133,7 +132,6 @@
      [:div.col-md-2
       [create-issue-button]]]
     [issues-list]]
-   [issues-list]
    [:div.row
     [:div.col-md-6
      [:button.btn "Load from Server"]]
