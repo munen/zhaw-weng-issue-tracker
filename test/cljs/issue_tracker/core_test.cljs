@@ -3,6 +3,8 @@
             [reagent.core :as r :refer [atom]]
             [issue-tracker.core :as itc :refer [issues-atom
                                                 new-issue
+                                                delete-issue
+                                                toggle-issue
                                                 add-issue-to-list
                                                 issues-counter]]))
 (defn setup []
@@ -12,27 +14,35 @@
 (deftest delete-issue-test
   (testing "Should delete a specific issue"
     (setup)
-    
-    ))
+    (is (= (count (keys @issues-atom))
+           0))
+    (do
+      (dotimes [n 3]
+        (add-issue-to-list issues-atom))
+      (is (= (keys @issues-atom)
+             [0 1 2]))
+    (do
+      (delete-issue issues-atom 0)
+      (is (= (keys @issues-atom)
+             [ 1 2]))))))
 
 (deftest toggle-issue-test
   (testing "Should toggle a specific issue"
     (setup)
     (dotimes [n 3]
       (add-issue-to-list issues-atom))
-    (println @issues-atom)
     (is (= (:completed (get-in @issues-atom [1]))
            false))
     (do
-      (itc/toggle-issue issues-atom 1)
+      (toggle-issue issues-atom 1)
       (is (= (:completed (get-in @issues-atom [1]))
              true)))
     (do
-      (itc/toggle-issue issues-atom 1)
+      (toggle-issue issues-atom 1)
       (is (= (:completed (get-in @issues-atom [1]))
              false)))
     (do
-      (itc/toggle-issue issues-atom 1)
+      (toggle-issue issues-atom 1)
       (is (= (:completed (get-in @issues-atom [1]))
              true)))))
 

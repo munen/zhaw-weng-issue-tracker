@@ -72,7 +72,7 @@
 
 (defn delete-issue [d key]
   "d is the atom that is to be updated"
-  (reset! d (filter #(not (= key (:key %))) @issues-atom)))
+  (reset! d (dissoc @d key)))
 ; END DATA Manipulation Functions
 
 
@@ -107,7 +107,7 @@
               [:div.row
                [:div.col-md-1
                 [:input {:type :checkbox
-                         :on-click #(toggle-issue issues-atom (:key issue))
+                         :on-click #(toggle-issue issues-atom key)
                          :checked (if (:completed issue) "checked" "")}]]
                [:div.col-md-3{:style {:text-decoration (if (:completed issue) :line-through :none)}}
 
@@ -117,7 +117,7 @@
                [:div.col-md-6{:style {:text-decoration (if (:completed issue) :line-through :none)}}
                 (:name issue)]
                [:div.col-md-1
-                [:button.destroy {:on-click #(delete-issue (:key issue))}
+                [:button.destroy {:on-click #(delete-issue issues-atom key)}
                  "x"]]]]))]))
 
 (defn home-page []
