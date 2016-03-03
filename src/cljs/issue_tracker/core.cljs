@@ -1,5 +1,6 @@
 (ns issue-tracker.core
   (:require [reagent.core :as r]
+            [reagent-forms.core :refer [bind-fields]]
             [reagent.session :as session]
             [secretary.core :as secretary :include-macros true]
             [goog.events :as events]
@@ -75,28 +76,6 @@
   (reset! d (dissoc @d key)))
 ; END DATA Manipulation Functions
 
-
-(defn priority-input []
-  [:select.form-control {:on-change #(swap! new-issue assoc :priority (-> % .-target .-value))}
-   [:option {:key :1} "1"]
-   [:option {:key :2} "2"]
-   [:option {:key :3} "3"]])
-
-(defn date-input [] 
-  [:input{:type "date"
-          :value (:date @new-issue)
-          :on-change #(swap! new-issue assoc :date (-> % .-target .-value))}])
-
-(defn issue-input []
-  [:input {:type :text
-           :placeholder "Enter your issue"
-           :on-change #(swap! new-issue assoc :name (-> % .-target .-value))}])
-
-(defn create-issue-button []
-  [:button.btn.btn-default
-   {:on-click #(add-issue-to-list issues-atom)}
-   "Create Task"])
-
 (defn issues-list []
   (fn []
     [:ul{:style {:list-style :none}}
@@ -114,24 +93,36 @@
                [:div.col-md-1
                 (:priority issue)]
                [:div.col-md-6{:style {:text-decoration (if (:completed issue) :line-through :none)}}
-                (:name issue)]
+                (:title issue)]
                [:div.col-md-1
                 [:button.destroy {:on-click #(delete-issue issues-atom key)}
                  "x"]]]]))]))
 
+(defn create-issue-button []
+  [:button.btn.btn-default
+   {:on-click #(add-issue-to-list issues-atom)}
+   "Create"])
+
+
+(def todo-form
+  [:div.row
+   [:div.col-md-1 
+    [:select.form-control {:field :list :id :priority}
+     [:option {:key :1} "1"]
+     [:option {:key :2} "2"]
+     [:option {:key :3} "3"]]]
+   [:div.col-md-3
+    [:div {:field :datepicker :id :due}]]
+   [:div.col-md-7
+    [:input {:field :text :id :title}]]
+   [:div.col-md-1
+    [create-issue-button]]])
+
 (defn home-page []
   [:div.container
    [:div.jumbotron
-    [:div.row
-     [:div.col-md-3
-      [priority-input]]
-     [:div.col-md-3
-      [date-input]]
-     [:div.col-md-4
-      [issue-input]]
-     [:div.col-md-2
-      [create-issue-button]]]
-    [issues-list]]
+    [bind-fields todo-form new-issue]]
+   [issues-list]
    [:div.row
     [:div.col-md-6
      [:button.btn "Load from Server"]]
