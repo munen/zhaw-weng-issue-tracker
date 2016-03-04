@@ -51,11 +51,15 @@
 
 ; BEGIN DATA Definitions
 (defonce issues-counter (r/atom 0))
+ 
+(defn today []
+  "Returns smth. like {:year 2016, :month 3, :day 3}"
+  (zipmap [:year :month :day]
+          (map js/parseInt (clojure.string/split (-> (js/Date.) .toISOString (.slice 0 10)) "-"))))
 
 (defonce new-issue (r/atom {:priority 1
                             :completed false
-                            ; Today
-                            :date (-> (js/Date.) .toISOString (.slice 0 10))}))
+                            :date (today)}))
 
 (defonce issues-atom (r/atom {}))
 ; END DATA Definitions
@@ -89,9 +93,14 @@
                          :checked (if (:completed issue) "checked" "")}]]
                [:div.col-md-3{:style {:text-decoration (if (:completed issue) :line-through :none)}}
 
-                (:date issue)]
+                (let [date (:date issue)
+                      year (:year date)
+                      month (:month date)
+                      day (:day date)]
+                  (str year "-" month "-" day))]
                [:div.col-md-1
-                (:priority issue)]
+                ; TODO: Very likely, there's a built-in function for that
+                (replace {":" "" } (str (:priority issue)))]
                [:div.col-md-6{:style {:text-decoration (if (:completed issue) :line-through :none)}}
                 (:title issue)]
                [:div.col-md-1
@@ -112,7 +121,7 @@
      [:option {:key :2} "2"]
      [:option {:key :3} "3"]]]
    [:div.col-md-3
-    [:div {:field :datepicker :id :due}]]
+    [:div {:field :datepicker :id :date :format "yyyy-mm-dd"}]]
    [:div.col-md-7
     [:input {:field :text :id :title}]]
    [:div.col-md-1
@@ -127,7 +136,11 @@
     [:div.col-md-6
      [:button.btn "Load from Server"]]
     [:div.col-md-6
-     [:button.btn "Save to Server"]]]])
+     [:button.btn "Save to Server"]]]
+   [:div.row
+    [:label (str @new-issue)]]
+   [:div.row
+    [:label (str @issues-atom)]]])
 
 (def pages
   {:home home-page
