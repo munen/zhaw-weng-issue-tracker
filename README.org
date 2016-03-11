@@ -9,23 +9,6 @@
 You will need [[https://github.com/technomancy/leiningen][Leiningen 2.0]] or above installed.
 
 
-*** Database
-
-Create a Postgres Database
-
-#+BEGIN_EXAMPLE
-CREATE DATABASE issue_tracker_dev;
-CREATE DATABASE issue_tracker_test;
-#+END_EXAMPLE
-
-*** Configure Database
-
-**** TODO Create a profiles.clj file
-#+BEGIN_SRC clojure
-{:profiles/dev  {:env {:database-url "jdbc:postgresql://localhost/issue_tracker_dev"}}
- :profiles/test {:env {:database-url "jdbc:postgresql://localhost/issue_tracker_test"}}}
-#+END_SRC
-
 ** Running
 
 To start a web server for the application, run:

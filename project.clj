@@ -21,9 +21,7 @@
                  [ring "1.4.0" :exclusions [ring/ring-jetty-adapter]]
                  [mount "0.1.9"]
                  [luminus-nrepl "0.1.2"]
-                 [migratus "0.8.13"]
                  [conman "0.4.5"]
-                 [org.postgresql/postgresql "9.4-1206-jdbc4"]
                  [org.clojure/clojurescript "1.7.228" :scope "provided"]
                  [reagent "0.5.1"]
                  [reagent-forms "0.5.20"]
@@ -42,12 +40,8 @@
   :resource-paths ["resources" "target/cljsbuild"]
 
   :main issue-tracker.core
-  :migratus {:store :database
-             :db (or (System/getenv "DATABASE_URL")
-                     (env :database-url))}
 
   :plugins [[lein-environ "1.0.1"]
-            [migratus-lein "0.2.6"]
             [lein-cljsbuild "1.1.1"]]
   :clean-targets ^{:protect false} [:target-path [:cljsbuild :builds :app :compiler :output-dir] [:cljsbuild :builds :app :compiler :output-to]]
   :cljsbuild

@@ -2,7 +2,6 @@
   (:require [issue-tracker.handler :refer [app init destroy]]
             [luminus.repl-server :as repl]
             [luminus.http-server :as http]
-            [issue-tracker.db.migrations :as migrations]
             [config.core :refer [env]])
   (:gen-class))
 
@@ -35,9 +34,5 @@
                  :port    port})))
 
 (defn -main [& args]
-  (cond
-    (some #{"migrate" "rollback"} args)
-    (do (migrations/migrate args) (System/exit 0))
-    :else
-    (start-app args)))
+  (start-app args))
   

@@ -13,18 +13,6 @@
     (let [response (app (request :get "/"))]
       (is (= 200 (:status response)))))
 
-  (testing "single issue"
-    (let [response (app (request :get "/issues/123"))
-          issue (parse-body response)]
-      (is (= 200 (:status response)))
-      (is (= "Issue 123" (:name issue)))))
-
-  (testing "list of issues"
-    (let [response (app (request :get "/issues"))
-          issues (parse-body response)]
-      (is (= 200 (:status response)))
-      (is (= "Issue 1" (:name (first issues))))))
-
   (testing "not-found route"
     (let [response (app (request :get "/invalid"))]
       (is (= 404 (:status response))))))
